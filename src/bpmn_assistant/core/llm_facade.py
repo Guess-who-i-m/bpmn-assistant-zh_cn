@@ -39,7 +39,7 @@ class LLMFacade:
     def call(
         self,
         prompt: str,
-        max_tokens: int = 1000,
+        max_tokens: int = 2000,
         temperature: float = 0.3,
         structured_output: BaseModel | None = None,
     ) -> str | dict[str, Any]:
@@ -67,7 +67,7 @@ class LLMFacade:
         return response
 
     def stream(
-        self, prompt: str, max_tokens: int = 1000, temperature: float = 0.3
+        self, prompt: str, max_tokens: int = 2000, temperature: float = 0.3
     ) -> Generator[str, None, None]:
         """
         Call the LLM model with the given prompt and stream the response.

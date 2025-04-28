@@ -19,7 +19,7 @@ def anthropic_facade():
 def openai_facade():
     load_dotenv(override=True)
     api_key = os.getenv("OPENAI_API_KEY")
-    return LLMFacade(Provider.OPENAI, api_key, OpenAIModels.GPT_4O_MINI.value)
+    return LLMFacade(Provider.OPENAI, api_key, OpenAIModels.GPT_4_1_MINI.value)
 
 
 @pytest.fixture

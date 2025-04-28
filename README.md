@@ -104,25 +104,24 @@ copy .env.example .env
 
 ### OpenAI
 
-* GPT-4o mini
-* GPT-4o
-* o3-mini
-
+* GPT-4.1
+* GPT-4.1 mini
+* o4-mini
 
 ### Anthropic
 
 * Claude 3.5 Haiku
-* Claude 3.5 Sonnet
+* Claude 3.7 Sonnet
 
 ### Google
 
-* Gemini 2.0 Flash
-* Gemini 2.0 Pro
+* Gemini 2.5 Flash
+* Gemini 2.5 Pro
 
 ### Fireworks AI
 
-* Llama 3.3 70B Instruct
-* Qwen 2.5 72B Instruct
+* Llama 4 Maverick
+* Qwen 2.5 72B
 * Deepseek V3
 * Deepseek R1
 

@@ -84,8 +84,8 @@ def replace_reasoning_model(model: str) -> str:
     """
     Replaces reasoning models with more lightweight models.
     """
-    if model == OpenAIModels.O3_MINI.value:
-        return OpenAIModels.GPT_4O_MINI.value
+    if model == OpenAIModels.O4_MINI.value:
+        return OpenAIModels.GPT_4_1_MINI.value
     elif model == FireworksAIModels.DEEPSEEK_R1.value:
         return FireworksAIModels.DEEPSEEK_V3.value
     return model

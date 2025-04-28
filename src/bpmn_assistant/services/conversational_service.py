@@ -33,7 +33,7 @@ class ConversationalService:
             "respond_to_query.jinja2", **template_vars
         )
 
-        yield from self.llm_facade.stream(prompt, max_tokens=500, temperature=0.5)
+        yield from self.llm_facade.stream(prompt, max_tokens=1000, temperature=0.5)
 
     def make_final_comment(
         self, message_history: list[MessageItem], process: Optional[list[dict[str, Any]]]
@@ -52,4 +52,4 @@ class ConversationalService:
             process=str(process),
         )
 
-        yield from self.llm_facade.stream(prompt, max_tokens=200, temperature=0.5)
+        yield from self.llm_facade.stream(prompt, max_tokens=500, temperature=0.5)

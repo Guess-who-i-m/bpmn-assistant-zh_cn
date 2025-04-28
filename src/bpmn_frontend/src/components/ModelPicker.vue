@@ -15,15 +15,15 @@
 
 <script>
 const Models = Object.freeze({
-  GPT_4O_MINI: 'gpt-4o-mini',
-  GPT_4O: 'gpt-4o',
-  O3_MINI: 'o3-mini',
+  GPT_4_1_MINI: 'gpt-4.1-mini',
+  GPT_4_1: 'gpt-4.1',
+  O4_MINI: 'o4-mini',
   HAIKU_3_5: 'claude-3-5-haiku-20241022',
-  SONNET_3_5: 'claude-3-5-sonnet-20241022',
-  GEMINI_2_PRO: 'gemini/gemini-2.0-pro-exp-02-05',
-  GEMINI_2_FLASH: 'gemini/gemini-2.0-flash-001',
-  LLAMA_3_3_70B:
-    'fireworks_ai/accounts/fireworks/models/llama-v3p3-70b-instruct',
+  SONNET_3_7: 'claude-3-7-sonnet-20250219',
+  GEMINI_2_5_PRO: 'gemini/gemini-2.5-pro-preview-03-25',
+  GEMINI_2_5_FLASH: 'gemini/gemini-2.5-flash-preview-04-17',
+  LLAMA_4_MAVERICK:
+    'fireworks_ai/accounts/fireworks/models/llama4-maverick-instruct-basic',
   QWEN_2_5_72B: 'fireworks_ai/accounts/fireworks/models/qwen2p5-72b-instruct',
   DEEPSEEK_V3: 'fireworks_ai/accounts/fireworks/models/deepseek-v3',
   DEEPSEEK_R1: 'fireworks_ai/accounts/fireworks/models/deepseek-r1',
@@ -45,9 +45,10 @@ export default {
     return {
       selectedModel: '',
       models: [
+        { value: Models.GPT_4_1, title: 'GPT-4.1', provider: Providers.OPENAI },
         {
-          value: Models.GPT_4O_MINI,
-          title: 'GPT-4o mini',
+          value: Models.GPT_4_1_MINI,
+          title: 'GPT-4.1 mini',
           provider: Providers.OPENAI,
         },
         { value: Models.GPT_4O, 
@@ -55,8 +56,8 @@ export default {
           provider: Providers.OPENAI 
         },
         {
-          value: Models.O3_MINI,
-          title: 'o3-mini',
+          value: Models.O4_MINI,
+          title: 'o4-mini',
           provider: Providers.OPENAI,
         },
         {
@@ -65,23 +66,23 @@ export default {
           provider: Providers.ANTHROPIC,
         },
         {
-          value: Models.SONNET_3_5,
-          title: 'Claude 3.5 Sonnet',
+          value: Models.SONNET_3_7,
+          title: 'Claude 3.7 Sonnet',
           provider: Providers.ANTHROPIC,
         },
         {
-          value: Models.GEMINI_2_FLASH,
-          title: 'Gemini 2.0 Flash',
+          value: Models.GEMINI_2_5_FLASH,
+          title: 'Gemini 2.5 Flash',
           provider: Providers.GOOGLE,
         },
         {
-          value: Models.GEMINI_2_PRO,
-          title: 'Gemini 2.0 Pro',
+          value: Models.GEMINI_2_5_PRO,
+          title: 'Gemini 2.5 Pro',
           provider: Providers.GOOGLE,
         },
         {
-          value: Models.LLAMA_3_3_70B,
-          title: 'Llama 3.3 70B',
+          value: Models.LLAMA_4_MAVERICK,
+          title: 'Llama 4 Maverick',
           provider: Providers.FIREWORKS_AI,
         },
         {
@@ -149,11 +150,11 @@ export default {
         );
 
         if (this.availableProviders.includes(Providers.OPENAI)) {
-          this.onModelChange(Models.GPT_4O);
+          this.onModelChange(Models.GPT_4_1);
         } else if (this.availableProviders.includes(Providers.ANTHROPIC)) {
-          this.onModelChange(Models.SONNET_3_5);
+          this.onModelChange(Models.SONNET_3_7);
         } else if (this.availableProviders.includes(Providers.GOOGLE)) {
-          this.onModelChange(Models.GEMINI_1_5_PRO);
+          this.onModelChange(Models.GEMINI_2_5_PRO);
         } else if (this.availableProviders.includes(Providers.FIREWORKS_AI)) {
           this.onModelChange(Models.LLAMA_3_3_70B);
         } else if (this.availableProviders.includes(Providers.ALI)){

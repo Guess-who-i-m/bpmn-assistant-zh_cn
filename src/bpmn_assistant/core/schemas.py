@@ -1,4 +1,4 @@
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict, Any
 
 from pydantic import BaseModel, RootModel
 from typing_extensions import Literal
@@ -96,7 +96,7 @@ class EditProposal(BaseModel):
     """
 
     function: str
-    arguments: dict
+    arguments: Dict[str, Any]
 
 
 class StopSignal(BaseModel):
