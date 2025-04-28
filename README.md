@@ -11,7 +11,7 @@
 1. 克隆这个仓库
 
 ```bash
-git clone https://github.com/Guess-who-i-m/bpmn-assistant.git
+git clone https://github.com/Guess-who-i-m/bpmn-assistant-zh_cn.git
 ```
 ```bash
 cd bpmn-assistant
