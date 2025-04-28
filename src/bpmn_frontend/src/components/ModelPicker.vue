@@ -45,15 +45,16 @@ export default {
     return {
       selectedModel: '',
       models: [
-        { value: Models.GPT_4_1, title: 'GPT-4.1', provider: Providers.OPENAI },
+      { value: Models.GPT_4_1, title: 'GPT-4.1', provider: Providers.OPENAI },
         {
           value: Models.GPT_4_1_MINI,
           title: 'GPT-4.1 mini',
           provider: Providers.OPENAI,
         },
-        { value: Models.GPT_4O, 
-          title: 'GPT-4o', 
-          provider: Providers.OPENAI 
+        {
+          value: Models.O4_MINI,
+          title: 'o4-mini',
+          provider: Providers.OPENAI,
         },
         {
           value: Models.O4_MINI,
