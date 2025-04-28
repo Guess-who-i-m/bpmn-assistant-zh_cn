@@ -4,7 +4,7 @@
 
 ---
 
-# Process editing functions
+# 流程编辑函数
 
 - `delete_element(element_id)`
 - `redirect_branch(branch_condition, next_id)`
@@ -12,45 +12,47 @@
 - `move_element(element_id, before_id=None, after_id=None)`
 - `update_element(new_element)`
 
-1. `delete_element` - Deletes an element from the process.
+**重点:** 所有修改必须生成符合示例规范的合法BPMN模型，并遵循上面所提供案例的模式。
 
-**Parameters:**
-- `element_id`: The id of an existing element in the process
+1. `delete_element` - 删除流程中的指定元素
 
-2. `redirect_branch` - Redirects the flow of a branch in an exclusive gateway.
+**参数:**
+- `element_id`: 目标元素在流程中的唯一标识符
 
-**Parameters:**
-- `branch_condition`: The condition of the branch to be redirected (needs to match the condition in the process)
-- `next_id`: The id of the next element to which the flow should be redirected
+2. `redirect_branch` - 重定向独占网关的分支流向
 
-3. `add_element` - Adds a new element to the process.
+**参数:**
+- `branch_condition`: 需要重定向的分支条件（需与流程定义完全匹配）
+- `next_id`: 流程重定向的目标元素ID
 
-**Parameters:**
-- `element`: An object representing a new element to be added to the process
-- `before_id`: (Optional) The id of the element before which the new element should be added
-- `after_id`: (Optional) The id of the element after which the new element should be added
+3. `add_element` - 向流程添加新元素
 
-**Note:** Only one of `before_id` or `after_id` should be provided.
+**参数:**
+- `element`: 待添加元素的对象表示
+- `before_id`:（可选）新元素插入位置的锚点前元素ID
+- `after_id`:（可选）新元素插入位置的锚点后元素ID
 
-4. `move_element` - Moves an existing element to a new position in the process.
+**注意:** before_id和after_id两个参数只能提供一个参数。添加网关时必须完整定义其内部结构。
 
-**Parameters:**
-- `element_id`: The id of an existing element in the process
-- `before_id`: (Optional) The id of the element before which the element should be moved
-- `after_id`: (Optional) The id of the element after which the element should be moved
+4. `move_element` - 调整元素在流程中的位置
 
-**Note:** Only one of `before_id` or `after_id` should be provided.
+**参数:**
+- `element_id`: 待移动元素的唯一标识符
+- `before_id`:（可选）移动后的前置锚点元素ID
+- `after_id`:（可选）移动后的后置锚点元素ID
 
-5. `update_element` - Updates an existing element in the process.
+**注意:** before_id和after_id两个参数只能提供一个参数。
 
-**Parameters:**
-- `new_element`: An object representing the updated element
+5. `update_element` - 更新现有元素属性
 
-**Note:** The `new_element`'s id should match the id of the element to be updated.
+**参数:**
+- `new_element`: 包含更新后属性的元素对象
+
+**注意:** 新元素的id必须和待更新属性的元素的id对应一致。
 
 ---
 
-# Example function calls
+# 函数调用示例
 
 ```json
 {
@@ -58,8 +60,8 @@
   "arguments": {
       "new_element": {
           "type": "task",
-          "id": "task1", // the id of the element to be updated
-          "label": "New task description"
+          "id": "task1", // 要更新的元素的id
+          "label": "更新后的任务描述"
       }
   }
 }
@@ -72,7 +74,7 @@
     "element": {
           "type": "task",
           "id": "newTaskId",
-          "label": "New task description"
+          "label": "更新后的任务描述"
     },
     "before_id": "task1"
   }
@@ -91,14 +93,14 @@
           {
             "type": "task",
             "id": "docTask1",
-            "label": "Review document"
+            "label": "回顾文档"
           },
         ],
         [
           {
             "type": "serviceTask",
             "id": "notifyTask1",
-            "label": "Send email notification"
+            "label": "发送邮件提醒"
           },
         ]
       ]
@@ -129,18 +131,21 @@
 
 ---
 
-# The JSON representation of the process
+# 当前流程状态的JSON表示格式
 
 ```json
 {{ process }}
 ```
 
-# The requested change to the process
+# 流程需要执行的变更
 
 ```
 {{ change_request }}
 ```
 
-Provide one function at a time to update the process, along with the arguments for the function call.
+执行策略:
 
-Start with the first function call.
+- 单次仅执行一个函数调用
+- 从首个必要修改开始逐步实施
+- 确保每次调用后流程保持合法状态
+- 从第一个函数开始调用

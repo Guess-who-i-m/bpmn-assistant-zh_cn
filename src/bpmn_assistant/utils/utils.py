@@ -8,11 +8,12 @@ from bpmn_assistant.core.enums import (
     FireworksAIModels,
     GoogleModels,
     OpenAIModels,
+    AliModels,
     OutputMode,
     Provider,
 )
 
-
+# 从这个util获得api-key
 def get_llm_facade(model: str, output_mode: OutputMode = OutputMode.JSON) -> LLMFacade:
     """
     Get the LLM facade based on the model type
@@ -38,6 +39,9 @@ def get_llm_facade(model: str, output_mode: OutputMode = OutputMode.JSON) -> LLM
     elif is_fireworks_ai_model(model):
         api_key = os.getenv("FIREWORKS_AI_API_KEY")
         provider = Provider.FIREWORKS_AI
+    elif is_ali_model(model):
+        api_key = os.getenv("DASHSCOPE_API_KEY")
+        provider = Provider.ALI
     else:
         raise Exception("Invalid model")
 
@@ -58,17 +62,22 @@ def get_available_providers() -> dict:
     anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     fireworks_api_key = os.getenv("FIREWORKS_AI_API_KEY")
+    ali_api_key = os.getenv("DASHSCOPE_API_KEY")
+
 
     openai_present = openai_api_key is not None and len(openai_api_key) > 0
     anthropic_present = anthropic_api_key is not None and len(anthropic_api_key) > 0
     google_present = gemini_api_key is not None and len(gemini_api_key) > 0
     fireworks_ai_present = fireworks_api_key is not None and len(fireworks_api_key) > 0
+    ali_present = ali_api_key is not None and len(ali_api_key) > 0
+
 
     return {
         "openai": openai_present,
         "anthropic": anthropic_present,
         "google": google_present,
         "fireworks_ai": fireworks_ai_present,
+        "ali": ali_present,
     }
 
 def replace_reasoning_model(model: str) -> str:
@@ -95,6 +104,9 @@ def is_google_model(model: str) -> bool:
 
 def is_fireworks_ai_model(model: str) -> bool:
     return model in [model.value for model in FireworksAIModels]
+
+def is_ali_model(model: str) -> bool:
+    return model in [model.value for model in AliModels]
 
 
 def message_history_to_string(message_history: list[MessageItem]) -> str:

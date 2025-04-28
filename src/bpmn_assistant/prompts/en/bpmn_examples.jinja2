@@ -1,9 +1,9 @@
-# process案例
+# Process examples
 
-BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。数组中的元素按照出现的顺序从前往后依次执行。
+The order of execution in the BPMN process is determined by the sequence of elements in the top-level "process" array. Elements are executed in the order they appear in this array, from first to last.
 
-文本描述：
-“学生发送邮件给教授。教授收到邮件。如果教授同意提案，则回复学生。”
+Textual description:
+"The student sends an email to the professor. The professor receives the email. If the professor agrees with the proposal, he replies to the student."
 
 ```json
 {
@@ -15,31 +15,31 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
         {
             "type": "userTask",
             "id": "task1",
-            "label": "发送邮件给教授",
+            "label": "Send email to professor",
         },
         {
             "type": "task",
             "id": "task2",
-            "label": "接收邮件",
+            "label": "Receive the email",
         },
         {
             "type": "exclusiveGateway",
             "id": "exclusive1",
-            "label": "教授是否同意？",
+            "label": "Professor agrees?",
             "has_join": true,
             "branches": [
                 {
-                    "condition": "如果教授同意",
+                    "condition": "If the professor agrees",
                     "path": [
                         {
                             "type": "task",
                             "id": "task3",
-                            "label": "回复学生",
+                            "label": "Reply to the student",
                         }
                     ]
                 },
                 {
-                    "condition": "如果教授不同意",
+                    "condition": "If the professor does not agree",
                     "path": []
                 }
             ]
@@ -54,8 +54,8 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
 
 ---
 
-文本描述：
-“经理同时执行两个流程：向供应商发送邮件并准备文件，同时客户搜索商品并提取商品。”
+Textual description:
+"The manager sends the mail to the supplier and prepares the documents. At the same time, the customer searches for the goods and picks up the goods."
 
 ```json
 {
@@ -72,24 +72,24 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
                     {
                         "type": "serviceTask",
                         "id": "task1",
-                        "label": "向供应商发送邮件",
+                        "label": "Send mail to supplier",
                     },
                     {
                         "type": "task",
                         "id": "task2",
-                        "label": "准备文件",
+                        "label": "Prepare the documents",
                     }
                 ],
                 [
                     {
                         "type": "task",
                         "id": "task3",
-                        "label": "搜索商品",
+                        "label": "Search for the goods",
                     },
                     {
                         "type": "task",
                         "id": "task4",
-                        "label": "提取商品",
+                        "label": "Pick up the goods",
                     }
                 ]
             ]
@@ -104,7 +104,7 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
 
 ---
 
-文本描述：“流程从进入考场开始。随后参加考试。考试结束后，如果分数超过50%则记录成绩并结束流程，否则需要重新考试。”
+Textual description: "Someone starts a process by entering an exam room. After that, they take the test. Once the exam is finished, their score is checked. If they scored more than 50%, their grade is recorded and the process ends. But if they fail, they have to go back to the beginning and take the exam again."
 
 ```json
 {
@@ -116,26 +116,26 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
       {
         "type": "task",
         "id": "task1",
-        "label": "进入考场"
+        "label": "Enter exam room"
       },
       {
         "type": "task",
         "id": "task2",
-        "label": "参加考试"
+        "label": "Take test"
       },
       {
         "type": "exclusiveGateway",
         "id": "eg",
-        "label": "分数超过50%吗？",
+        "label": "Score more than 50%?",
         "has_join": false,
         "branches": [
           {
-            "condition": "是",
+            "condition": "Yes",
             "path": [
               {
                 "type": "task",
                 "id": "task3",
-                "label": "记录成绩"
+                "label": "Enter grade"
               },
               {
                 "type": "endEvent",
@@ -144,7 +144,7 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
             ]
           },
           {
-            "condition": "否",
+            "condition": "No",
             "path": [],
             "next": "task1"
           }
@@ -156,7 +156,7 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
 
 ---
 
-文本描述：“流程从主决策开始。如果选择选项A，则执行任务A并进入嵌套决策；如果选择选项B，则执行任务B。”
+Textual description: "The process starts with a decision. If Option A is selected, Task A is performed. If Option B is selected, Task B is performed. Task A is followed by another decision. If Sub-option 1 is selected, Task A1 is performed. If Sub-option 2 is selected, Task A2 is performed."
 
 
 ```json
@@ -169,40 +169,40 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
     {
       "type": "exclusiveGateway",
       "id": "gateway1",
-      "label": "主决策",
+      "label": "Main Decision",
       "has_join": false,
       "branches": [
         {
-          "condition": "选项A",
+          "condition": "Option A",
           "path": [
             {
               "type": "task",
               "id": "taskA",
-              "label": "执行任务A",
+              "label": "Perform Task A",
             },
             {
               "type": "exclusiveGateway",
               "id": "gateway2",
-              "label": "嵌套决策",
+              "label": "Nested Decision",
               "has_join": false,
               "branches": [
                 {
-                  "condition": "子选项1",
+                  "condition": "Sub-option 1",
                   "path": [
                     {
                       "type": "task",
                       "id": "taskA1",
-                      "label": "执行任务A1",
+                      "label": "Perform Task A1",
                     }
                   ],
                 },
                 {
-                  "condition": "子选项2",
+                  "condition": "Sub-option 2",
                   "path": [
                     {
                       "type": "task",
                       "id": "taskA2",
-                      "label": "执行任务A2",
+                      "label": "Perform Task A2",
                     }
                   ],
                 }
@@ -211,12 +211,12 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
           ],
         },
         {
-          "condition": "选项B",
+          "condition": "Option B",
           "path": [
             {
               "type": "task",
               "id": "taskB",
-              "label": "执行任务B",
+              "label": "Perform Task B",
             }
           ],
         }
@@ -232,7 +232,7 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
 
 ---
 
-文本描述：“订单流程从客户提交订单开始。系统处理订单后，有效订单进入履约环节，无效订单直接拒绝。”
+Textual description: "An order process starts when a customer submits an order. The order is then processed by the system. If the order is valid, it is fulfilled and the process ends with a successful delivery. If the order is invalid, the process ends with order rejection."
 
 ```json
 {
@@ -240,41 +240,41 @@ BPMN流程中的执行顺序由顶级"process"数组中的元素顺序决定。�
     {
       "type": "startEvent",
       "id": "start",
-      "label": "订单提交"
+      "label": "Order submitted"
     },
     {
       "type": "task",
       "id": "task1",
-      "label": "处理订单"
+      "label": "Process order"
     },
     {
       "type": "exclusiveGateway",
       "id": "gateway1",
-      "label": "订单有效吗？",
+      "label": "Order valid?",
       "has_join": false,
       "branches": [
         {
-          "condition": "是",
+          "condition": "Yes",
           "path": [
             {
               "type": "task",
               "id": "task2",
-              "label": "履约订单"
+              "label": "Fulfill order"
             },
             {
               "type": "endEvent",
               "id": "end1",
-              "label": "订单交付"
+              "label": "Order delivered"
             }
           ]
         },
         {
-          "condition": "否",
+          "condition": "No",
           "path": [
             {
               "type": "endEvent",
               "id": "end2",
-              "label": "订单拒绝"
+              "label": "Order rejected"
             }
           ]
         }

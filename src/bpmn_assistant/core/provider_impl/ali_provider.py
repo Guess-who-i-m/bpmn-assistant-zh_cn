@@ -2,23 +2,24 @@ import json
 import os
 import re
 from typing import Any, Generator
-
-from litellm import completion
+from openai import OpenAI, beta
 from pydantic import BaseModel
 
-from bpmn_assistant.config import logger
-from bpmn_assistant.core.enums.message_roles import MessageRole
-from bpmn_assistant.core.enums.models import FireworksAIModels, GoogleModels, OpenAIModels
-from bpmn_assistant.core.enums.output_modes import OutputMode
 from bpmn_assistant.core.llm_provider import LLMProvider
+from bpmn_assistant.core.enums.output_modes import OutputMode
+from bpmn_assistant.core.enums.message_roles import MessageRole
+from bpmn_assistant.config import logger
+from bpmn_assistant.core.enums.models import AliModels
 
-
-class LiteLLMProvider(LLMProvider):
+class AliProvider(LLMProvider):
     def __init__(self, api_key: str, output_mode: OutputMode = OutputMode.JSON):
         self.output_mode = output_mode
-        os.environ["FIREWORKS_AI_API_KEY"] = api_key
-        os.environ["OPENAI_API_KEY"] = api_key
-        os.environ["GEMINI_API_KEY"] = api_key
+        os.environ["DASHSCOPE_API_KEY"]=api_key
+        self.client = OpenAI(
+            # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx",
+            api_key=os.getenv("DASHSCOPE_API_KEY"),
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        )
 
     def call(
         self,
@@ -31,38 +32,63 @@ class LiteLLMProvider(LLMProvider):
     ) -> str | dict[str, Any]:
         messages.append({"role": "user", "content": prompt})
 
+        # print("model：\n" + str(model))
+        # print("prompt：\n" + str(prompt))
+
         params: dict[str, Any] = {
             "model": model,                             # 设定模型
             "messages": messages,                       # 传入prompt
         }
 
         # Google's structured output does not support type unions
-        if structured_output is not None and model not in [m.value for m in GoogleModels]:
-            params["response_format"] = structured_output
-        elif self.output_mode == OutputMode.JSON:
-            params["response_format"] = {"type": "json_object"}
+        # if structured_output is not None:
+        #     params["response_format"] = structured_output
+        # elif self.output_mode == OutputMode.JSON:
+        #     params["response_format"] = {"type": "json_object"}
 
-        if model != OpenAIModels.O3_MINI.value:
-            params["max_tokens"] = max_tokens
-            params["temperature"] = temperature
+        # 通义千问专用路径
+        if structured_output:
+            # 生成JSON Schema描述
+            schema_desc = structured_output.model_json_schema()
+            print("schema_desc:" + str(schema_desc))
+            messages.append({
+                "role": "system",
+                "content": f"请严格按以下JSON格式响应：\n```json\n{schema_desc}\n```"
+            })
 
-        response = completion(**params)
 
+        # params["max_tokens"] = max_tokens
+        # params["temperature"] = temperature
+        # params["max_tokens"] = max_tokens * 10  # 因其token计算方式不同
+        # print("tokens", max_tokens)
+        params["max_tokens"] = 8192  # 因其token计算方式不同
+        params["top_p"] = 0.8  # 推荐参数
+        params["stream"] = False
+
+        try:
+            # response = completion(**params)
+            # 替换为通义千问的问题逻辑
+            response = self.client.chat.completions.create(
+                **params
+            )
+        except Exception as e:
+            logger.error(f"API调用失败: {str(e)}")
+            raise
         raw_output = response.choices[0].message.content
 
-        if model == FireworksAIModels.DEEPSEEK_R1.value:
-            # Extract thinking phase and clean output
-            think_pattern = r"<think>(.*?)</think>"
-            think_match = re.search(think_pattern, raw_output, re.DOTALL)
-
-            if think_match:
-                thinking = think_match.group(1).strip()
-                logger.info(f"Model thinking phase: {thinking}")
-                raw_output = re.sub(
-                    think_pattern, "", raw_output, flags=re.DOTALL
-                ).strip()
+        # 🗝️ 提取JSON内容
+        json_match = re.search(r"```json\n(.*?)\n```", raw_output, re.DOTALL)
+        if json_match:
+            raw_output = json_match.group(1).strip()
+            try:
+                return json.loads(raw_output)
+            except json.JSONDecodeError:
+                logger.warning("通义千问JSON解析失败，尝试原始解析")
 
         return self._process_response(raw_output)
+        #
+        # return self._process_response(raw_output)
+
 
     def stream(
         self,
@@ -74,7 +100,9 @@ class LiteLLMProvider(LLMProvider):
     ) -> Generator[str, None, None]:
         messages.append({"role": "user", "content": prompt})
 
-        response = completion(
+        max_tokens = 2048
+
+        response = self.client.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=max_tokens,
@@ -104,7 +132,7 @@ class LiteLLMProvider(LLMProvider):
         messages.append({"role": message_role, "content": content})
 
     def check_model_compatibility(self, model: str) -> bool:
-        return model in [m.value for m in FireworksAIModels] or model in [m.value for m in OpenAIModels] or model in [m.value for m in GoogleModels]
+        return model in [m.value for m in AliModels]
 
     def _process_response(self, raw_output: str) -> str | dict[str, Any]:
         """

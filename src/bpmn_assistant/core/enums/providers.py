@@ -6,3 +6,4 @@ class Provider(Enum):
     ANTHROPIC = "anthropic"
     GOOGLE = "google"
     FIREWORKS_AI = "fireworks_ai"
+    ALI="ali"

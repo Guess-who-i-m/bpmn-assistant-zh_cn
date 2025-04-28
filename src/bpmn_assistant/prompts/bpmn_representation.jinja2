@@ -1,86 +1,94 @@
-The BPMN JSON representation uses a sequence of elements to describe the process. Each element is executed in order based on its position in the "process" array unless gateways (exclusive or parallel) specify branching paths.
+BPMN JSON通过一系列元素描述流程。元素默认按照"process"数组中的顺序依次执行，除非遇到网关（独占或并行）指定分支路径。
 
-# Representation of various BPMN elements
+# 各类BPMN元素的表示规范
 
-## Tasks
+## 任务（Tasks）
 
-Specify the task type in the 'type' field. Only "task", "userTask" and "serviceTask" options are supported.
-Always try to specify the specific task type:
-- Use 'userTask' for any human interaction (reviewing, deciding, entering data)
-- Use 'serviceTask' for automated system actions (calculations, emails, database operations)
-- Use 'task' only if the action cannot be clearly classified as user or system task
-Each task must be atomic - representing a single unit of work. Break down complex activities into multiple separate tasks.
-Labels must be clear and concise (ideally 2-4 words).
+在'type'字段明确指定任务类型。仅支持三种类型：“task”、“userTask”、“serviceTask”
+应尽可能指定具体类型：
+- userTask：人工交互场景（审批、决策、数据录入）
+- serviceTask：自动化系统操作（计算、邮件发送、数据库操作）
+- task：仅当无法明确归类时使用
+每个任务必须原子化——代表单一工作单元，复杂操作应拆分为多个任务
+标签(label)需简明扼要（建议2-4个词）
 
 ```json
 {
     "type": String = "task" | "userTask" | "serviceTask"
     "id": String,
-    "label": String, // short task description
+    "label": String, // 简短任务描述（中文描述）
 }
 ```
 
-## Events
+## 事件（Events）
 
-Specify the event type in the 'type' field. Only "startEvent" and "endEvent" options are supported.
+在'type'字段指定事件类型。仅支持：“startEvent”、“endEvent”
 
 ```json
 {
     "type": String = "startEvent" | "endEvent",
     "id": String,
-    "label": String, // OPTIONAL: short event description
+    "label": String, // 可选：事件描述（中文描述）
 }
 ```
 
-## Gateways
+## 网关（Gateways）
 
-Gateways determine process flow based on conditions or parallel tasks.
+通过网关实现条件分支或并行任务
 
-### Exclusive gateway
+### 独占网关（Exclusive Gateway）
 
-Each branch must include a condition and an array of elements that are executed if the condition is met.
-If a branch has an empty "path", it leads to the first element after the exclusive gateway.
-If the branch does not lead to the next element in the process (for example, it goes back to a previous element), specify the next element id.
-If the branch leads to the next element in the process, do not specify the next element id.
-If the process needs to end under a specific condition, you must explicitly include an end event in that branch's "path". If no end event is provided, the process will automatically continue to the next task in the sequence.
-If the process description does not explicitly mention the 'else' branch or specify the outcome for an unmet condition, assume it leads to an end event.
+每个分支必须包含一个'condition'条件表达式和一个满足条件时执行的元素数组
+特殊处理规则：
+- 空path表示直接跳转到网关后第一个元素
+- 若分支不指向默认后续元素（例如循环跳转），需通过next指定目标元素ID
+- 若分支需要结束流程，必须在path中显式包含endEvent
+- 未明确描述的条件分支默认指向endEvent
 
-
+每个分支必须包含：
+- condition条件表达式
+- path条件满足时执行的元素数组
+具体处理逻辑：
+- 空路径处理：当path为空数组时，默认跳转到该独占网关后的第一个流程元素
+- 非连续路径跳转：若分支不指向默认后续元素（例如循环跳转至先前元素），必须通过next字段指定目标元素ID
+- 连续路径处理：若分支指向默认后续元素，禁止指定next字段
+- 流程终止控制：若特定条件需要终止流程，必须在该分支的path中显式包含endEvent。未提供endEvent时流程将自动继续后续任务
+- 未声明分支处理：当流程描述未明确’else’分支或未满足条件的情况时，默认假定指向endEvent
 ```json
 {
     "type": String = "exclusiveGateway",
     "id": String,
-    "label": String, // label for the gateway (e.g. "Professor agrees?")
-    "has_join": Boolean, // whether the gateway contains a join element that merges the branches
+    "label": String, // 网关描述（例："审批通过？"）
+    "has_join": Boolean, // 是否包含合并分支的join节点
     "branches": [
         {
-            "condition": String, // condition for the branch
-            "path": [], // array of elements that are executed if the condition is met (can be empty)
-            "next": String, // OPTIONAL: ID of the next element if not following default sequence. Omit or set to null if following default sequence.
+            "condition": String, // 分支条件（建议中文）
+            "path": [], // 条件满足时执行路径（可为空）
+            "next": String, // 可选：非默认路径时指定跳转元素ID
         },
         {
             "condition": String,
             "path": [],
-            "next": String, // OPTIONAL: as above
+            "next": String, // 可供选择：和上面一样
         },
-        // ... more branches
+        // ...更多分支
     ],
 }
 ```
 
-### Parallel gateway
+### 并行网关（Parallel Gateway）
 
-Specify "branches" as an array of arrays, where each sub-array lists elements executed in parallel.
-A converging element is automatically generated to synchronize parallel branches. Therefore, there's no need to explicitly specify it.
+branches定义为二维数组，每个子数组表示并行执行的分支分支
+注意：系统会自动生成汇聚网关，无需显式声明
 
 ```json
 {
     "type": String = "parallelGateway",
     "id": String,
     "branches": [
-        [], // array of elements that are executed in parallel with the next array
-        [], // array of elements that are executed in parallel with the previous array
-        // ... more arrays
+        [], // 第一组并行元素
+        [], // 第二组并行元素
+        // ...更多并行分支
     ],
 }
 ```

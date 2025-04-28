@@ -27,6 +27,8 @@ const Models = Object.freeze({
   QWEN_2_5_72B: 'fireworks_ai/accounts/fireworks/models/qwen2p5-72b-instruct',
   DEEPSEEK_V3: 'fireworks_ai/accounts/fireworks/models/deepseek-v3',
   DEEPSEEK_R1: 'fireworks_ai/accounts/fireworks/models/deepseek-r1',
+  QWEN_PLUS: 'qwen-plus',
+  QWEN_MAX: 'qwen-max'
 });
 
 const Providers = Object.freeze({
@@ -34,6 +36,7 @@ const Providers = Object.freeze({
   ANTHROPIC: 'anthropic',
   GOOGLE: 'google',
   FIREWORKS_AI: 'fireworks_ai',
+  ALI:'ali'
 });
 
 export default {
@@ -47,7 +50,10 @@ export default {
           title: 'GPT-4o mini',
           provider: Providers.OPENAI,
         },
-        { value: Models.GPT_4O, title: 'GPT-4o', provider: Providers.OPENAI },
+        { value: Models.GPT_4O, 
+          title: 'GPT-4o', 
+          provider: Providers.OPENAI 
+        },
         {
           value: Models.O3_MINI,
           title: 'o3-mini',
@@ -93,6 +99,16 @@ export default {
           title: 'Deepseek R1',
           provider: Providers.FIREWORKS_AI,
         },
+        {
+          value: Models.QWEN_PLUS,
+          title: 'Qwen plus',
+          provider: Providers.ALI,
+        },
+        {
+          value: Models.QWEN_MAX,
+          title: 'Qwen max',
+          provider: Providers.ALI,
+        }
       ],
       availableProviders: [],
     };
@@ -119,11 +135,14 @@ export default {
           }
         );
 
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+
+        console.log(data)
 
         this.availableProviders = Object.keys(data).filter(
           (provider) => data[provider]
@@ -137,6 +156,8 @@ export default {
           this.onModelChange(Models.GEMINI_1_5_PRO);
         } else if (this.availableProviders.includes(Providers.FIREWORKS_AI)) {
           this.onModelChange(Models.LLAMA_3_3_70B);
+        } else if (this.availableProviders.includes(Providers.ALI)){
+          this.onModelChange(Models.QWEN_MAX)
         }
       } catch (error) {
         console.error('Error fetching available providers', error);

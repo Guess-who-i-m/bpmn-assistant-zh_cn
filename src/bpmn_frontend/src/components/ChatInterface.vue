@@ -95,6 +95,16 @@
 
     <div class="input-area">
       <div class="input-wrapper">
+        <!-- 在发送按钮左侧添加反馈按钮 -->
+        <v-btn
+            @click="$emit('feedback-requested')"
+            :disabled="isLoading"
+            color="grey"
+            class="mr-2"
+            icon="mdi-alert-circle-outline"
+            variant="text"
+            size="small"
+        ></v-btn>
         <v-textarea
           label="Message BPMN Assistant..."
           v-model="currentInput"
@@ -189,6 +199,9 @@ export default {
       }
     },
     async handleMessageSubmit() {
+      // 在用户消息发送后触发事件
+      this.$emit('user-message', this.currentInput);
+
       if (!this.currentInput.trim()) {
         return;
       }
@@ -317,6 +330,7 @@ export default {
 
           const chunk = new TextDecoder('utf-8').decode(value);
           // console.log(JSON.stringify(chunk));
+          this.$emit('assistant-message', chunk);  // 新增AI消息事件
           updateOrAddLastMessage(chunk);
 
           return reader.read().then(processText);

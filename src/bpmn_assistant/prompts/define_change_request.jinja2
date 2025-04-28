@@ -4,7 +4,7 @@
 
 ---
 
-# Process editing functions
+# 流程编辑函数
 
 - `delete_element(element_id)`
 - `redirect_branch(branch_condition, next_id)`
@@ -12,58 +12,58 @@
 - `move_element(element_id, before_id=None, after_id=None)`
 - `update_element(new_element)`
 
-**Important:** All changes must result in a valid BPMN model, following the patterns shown in the examples above.
+**重点:** 所有修改必须生成符合示例规范的合法BPMN模型，并遵循上面所提供案例的模式。
 
-1. `delete_element` - Deletes an element from the process.
+1. `delete_element` - 删除流程中的指定元素
 
-**Parameters:**
-- `element_id`: The id of an existing element in the process
+**参数:**
+- `element_id`: 目标元素在流程中的唯一标识符
 
-2. `redirect_branch` - Redirects the flow of a branch in an exclusive gateway.
+2. `redirect_branch` - 重定向独占网关的分支流向
 
-**Parameters:**
-- `branch_condition`: The condition of the branch to be redirected (needs to match the condition in the process)
-- `next_id`: The id of the next element to which the flow should be redirected
+**参数:**
+- `branch_condition`: 需要重定向的分支条件（需与流程定义完全匹配）
+- `next_id`: 流程重定向的目标元素ID
 
-3. `add_element` - Adds a new element to the process.
+3. `add_element` - 向流程添加新元素
 
-**Parameters:**
-- `element`: An object representing a new element to be added to the process
-- `before_id`: (Optional) The id of the element before which the new element should be added
-- `after_id`: (Optional) The id of the element after which the new element should be added
+**参数:**
+- `element`: 待添加元素的对象表示
+- `before_id`:（可选）新元素插入位置的锚点前元素ID
+- `after_id`:（可选）新元素插入位置的锚点后元素ID
 
-**Note:** Only one of `before_id` or `after_id` should be provided. When adding a gateway, you must define all the elements within the gateway.
+**注意:** before_id和after_id两个参数只能提供一个参数。添加网关时必须完整定义其内部结构。
 
-4. `move_element` - Moves an existing element to a new position in the process.
+4. `move_element` - 调整元素在流程中的位置
 
-**Parameters:**
-- `element_id`: The id of an existing element in the process
-- `before_id`: (Optional) The id of the element before which the element should be moved
-- `after_id`: (Optional) The id of the element after which the element should be moved
+**参数:**
+- `element_id`: 待移动元素的唯一标识符
+- `before_id`:（可选）移动后的前置锚点元素ID
+- `after_id`:（可选）移动后的后置锚点元素ID
 
-**Note:** Only one of `before_id` or `after_id` should be provided.
+**注意:** before_id和after_id两个参数只能提供一个参数。
 
-5. `update_element` - Updates an existing element in the process.
+5. `update_element` - 更新现有元素属性
 
-**Parameters:**
-- `new_element`: An object representing the updated element
+**参数:**
+- `new_element`: 包含更新后属性的元素对象
 
-**Note:** The `new_element`'s id should match the id of the element to be updated.
+**注意:** 新元素的id必须和待更新属性的元素的id对应一致。
 
 ---
 
-# Current process
+# 当前流程状态
 
 {{ process }}
 
-# Message history
+# 对话历史记录
 
 {{ message_history }}
 
-The last user message indicates that the user wants to make a modification to the process.
+上面user最后的信息表明了user想要对流程进行一个修改。
 
-Based on the last user message, construct a **concise** change request.
+根据用户最后请求的流程变更需求，生成**简明**变更指令：
 
-The change request should include:
-1. A short natural language description of the change.
-2. A breakdown of exactly which functions should be called to implement the change, specifying the required arguments for each function call.
+变更指令应包含：
+1. 自然语言描述的变更概要
+2. 具体调用的编辑函数清单（需明确每一个函数的参数配置）

@@ -2,6 +2,12 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse, StreamingResponse
 from starlette.middleware.cors import CORSMiddleware
 
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
 from bpmn_assistant.api.requests import (
     BpmnToJsonRequest,
     ConversationalRequest,

@@ -4,11 +4,18 @@
 
 ---
 
-The following is the message history between the user and an AI assistant.
+以下是user与AI assistant之间的对话历史记录：
 
-Message history:
+消息历史：
 ```
 {{ message_history }}
 ```
 
-Create a BPMN representation of the process described in the messages.
+知识库检索信息：
+```
+{{ knowledge }}
+```
+
+请自行判断知识库中检索的信息和用户提问是否具有很强的相关性，如果相关并且相关性很强，则结合知识库中检索到的信息，生成对应的BPMN流程模型表示。
+如果不相关或者相关性相对较弱，请自行完善用户的流程描述，并生成对应的BPMN流程模型表示。
+

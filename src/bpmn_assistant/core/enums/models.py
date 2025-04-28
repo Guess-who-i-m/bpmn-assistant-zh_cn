@@ -22,3 +22,7 @@ class FireworksAIModels(Enum):
     QWEN_2_5_72B = "fireworks_ai/accounts/fireworks/models/qwen2p5-72b-instruct"
     DEEPSEEK_V3 = "fireworks_ai/accounts/fireworks/models/deepseek-v3"
     DEEPSEEK_R1 = "fireworks_ai/accounts/fireworks/models/deepseek-r1"
+
+class AliModels(Enum):
+    QWEN_PLUS = "qwen-plus"
+    QWEN_MAX  = "qwen-max"

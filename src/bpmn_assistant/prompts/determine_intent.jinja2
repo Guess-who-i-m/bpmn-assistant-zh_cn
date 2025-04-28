@@ -2,41 +2,44 @@
 
 ---
 
-Based on this message history, determine whether the last user message indicates that the user wants to:
-1. Make a modification to the process or create a new process.
-2. Ask for information or make conversation.
+根据对话历史，判断最后一条user信息是否表明用户有以下需求：
+1. 请求修改现有流程或创建新流程
+2. 进行普通对话或信息咨询
 
-Example messages where the user wants to make a modification or create a new process:
-- a literal description of the process
-- "Create this process: [description of the process]"
-- "Build this: [description of the process]"
-- "Remove the task where the manager needs to approve the budget."
-- "Add a parallel gateway before the task to check the budget."
-- "Change the order of the last two tasks."
-- "Then change it."
-- "The process consists of the manager approving the budget, then the task to check the budget, and finally the task to create the report."
-- "After entering the grade, the professor should be notified."
-- "Visualize this process: [description of the process]"
+用户想要修改流程或者创建一个新流程的案例：
+- 直接描述流程结构
+- "创建这个流程：[流程描述]"
+- "构建流程：[流程描述]"
+- "删除需要经理审批预算的任务"
+- "在预算检查任务前添加并行网关"
+- "调整最后两个任务的执行顺序"
+- "然后修改它"
+- "流程包含经理审批预算、检查预算、生成报告三个步骤"
+- "成绩录入后需要通知教授"
+- "可视化此流程：[流程描述]"
 
-Example messages where the user is asking for information or making conversation:
-- "Hello"
-- "Can you describe the process?"
-- "What happens after the task to check the budget?"
-- "I don't understand what happens in that big exclusive gateway after the first task."
-- "Tell me more about that event."
-- "Can you help me create a new process?"
-- "I will explain the process to you, and you will then visualize it, ok?"
+用户进行普通对话或信息咨询的案例：
+- "你好"
+- "能否描述当前流程？"
+- "预算检查任务后是什么步骤？"
+- "不理解第一个任务后的独占网关逻辑"
+- "请详细说明该事件的作用"
+- "能帮我新建流程吗？"
+- "我描述流程后你进行可视化，可以吗？"
 
-Your response will be in the form of a JSON object with a single key, "intent", which will have the value "modify" if the user wants to make a modification or create a new process, or "talk" if the user is asking for information or making conversation.
 
-Response if the user wants to make a modification or create a new process:
+你的响应必须使用JSON格式，并且JSON中只包含一个键，这个键是"intent"
+- 当用户想要修改流程或者创建一个新流程，值为"modify"
+- 当用户想要进行普通对话或信息咨询，值为"talk"
+
+用户想要想要修改流程或者创建一个新流程时的响应：
 ```json
 {
     "intent": "modify",
 }
 ```
 
-Response if the user is asking for information or making conversation:
+用户想要进行普通对话或信息咨询时的响应：
 ```json
 {
     "intent": "talk",

@@ -4,7 +4,9 @@ from pydantic import BaseModel
 
 from bpmn_assistant.core.enums import MessageRole
 
-
+# 这里只是一个抽象接口类
+# 具体的实现在provider_impl里面
+# 这里只规定参数类型和返回结果，具体实现在impl里面通过继承实现
 class LLMProvider(ABC):
     @abstractmethod
     def call(

@@ -1,22 +1,25 @@
 ![Logo](images/bpmn_assistant_logo.png)
 
-BPMN Assistant is an application that uses Large Language Models (LLMs) to assist with creating, editing, and
-interpreting Business Process Model and Notation (BPMN) diagrams.
+这个仓库继承自仓库 https://github.com/jtlicardo/bpmn-assistant ，感谢原作者对chat-bpmn工作做出的突出贡献，本项目的存在无意冒犯原作者的个人知识产权，仅用于记录本人在项目部署运行时做出的修改和轻微改进。在原项目中，用户可以直接使用大模型辅助创建、编辑、翻译BPMN图。在本项目中，主要对原项目做出了如下的更改：
 
-## Quickstart
+- 增加了阿里云Qwen-max和Qwen-plus的访问接口，使得中国用户能够更加轻松的完成LLM的配置，体验LLM驱动的BPMN生成
+- 增加了检索增强生成(RAG)的相关逻辑，生成BPMN前能够检索向量数据库中的知识，使得生成逻辑更贴近需求
+- 将所有prompt逻辑翻译为中文
 
-1. Clone the repository
+值得注意的是，本人对项目的部署并没有采用原作者给出的docker方法，而是直接通过运行vue和fast api项目完成部署。docker部署方法的准确性有待考量。
 
+## 快速开始
+
+1. 克隆这个仓库
+
+```bash
+git clone https://github.com/Guess-who-i-m/bpmn-assistant.git
 ```
-git clone https://github.com/jtlicardo/bpmn-assistant.git
-```
-
-```
+```bash
 cd bpmn-assistant
 ```
 
-2. Set up your environment variables
-
+2. 设置环境变量
 <details>
 <summary>Linux, macOS</summary>
 
@@ -33,39 +36,71 @@ cp .env.example .env
 <details>
 <summary>Windows</summary>
 
-```
-cd src\bpmn_assistant
+```bash
+cd src/bpmn_assistant
 ```
 
-```
+```bash
 copy .env.example .env
 ```
 
 </details>
 
-3. Open the `.env` file and replace the placeholder values with your actual API keys.
+3. 打开刚刚复制的.env文件，把API-Key相关的内容放到里面。
 
-4. Build and run the application
+4. 开始构建项目
+<details>
+  <summary>使用docker</summary>
 
-```
-docker-compose up --build
-```
+  首先使用docker完成部署
 
-5. Open your browser and go to `http://localhost:8080`
+  ```bash
+  docker-compose up --build
+  ```
 
-## Prerequisites
+  之后打开浏览器访问服务http://localhost:8080。
+</details>
+<details>
+  <summary>原生构建</summary>
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- At least one of the following API keys:
-    - [OpenAI API key](https://platform.openai.com/docs/quickstart)
-    - [Anthropic API key](https://console.anthropic.com/)
-    - [Google AI Studio (Gemini) API key](https://aistudio.google.com/app/apikey)
-    - [Fireworks AI API key](https://docs.fireworks.ai/getting-started/quickstart)
+  采用这种方法，你首先需要拥有nodejs，vue和python(fastapi)的运行环境。
 
-Note: You can use any combination of the API keys above, but at least one is required to use the app.
+  首先构建后端环境，我们使用conda来管理环境。
 
-## Supported models
+  ```bash
+  cd src/bpmn_assistant
+  conda create -n bpmn_backend python=3.10
+  conda activate bpmn_backend
+  pip install -r requirements.txt
+  ```
+  
+  完成环境配置后，运行fastapi启动命令即可。
+
+  ```bash
+  cd src/bpmn_assistant
+  uvicorn app:app --host 0.0.0.0 --port 8000
+  ```
+
+  构建bpmn_layout_server
+  ```bash
+  cd src/bpmn_layout_server
+  npm install
+  node server.js
+  ```
+
+  最后构建前端
+
+  ```bash
+  cd src/bpmn_frontend
+  npm install
+  npm run dev
+  ```
+  之后打开vue渲染得到的前端页面即可正常使用服务。
+
+
+</details>
+
+## 支持的模型
 
 ### OpenAI
 
@@ -91,38 +126,16 @@ Note: You can use any combination of the API keys above, but at least one is req
 * Deepseek V3
 * Deepseek R1
 
-## Screenshots
+### 阿里云
 
-![Screenshot](images/screenshot_1.png)
+* Qwen-max
+* Qwen-plus
+ 
 
-![Screenshot](images/screenshot_2.png)
+## 后续要做的事
 
-## Core features
+2025-04-28 
 
-1. Diagram creation - Generates BPMN diagrams based on text descriptions.
-2. Diagram editing - Modifies BPMN diagrams based on user input.
-3. Diagram interpretation - Provides text descriptions of BPMN diagrams.
-4. Drag-and-drop functionality - Users can drag and drop BPMN files (containing only supported elements) into the
-   editor, then ask the LLM to edit or explain the process.
+当前版本尚不支持RAG功能的部署，等待后续有时间将RAG相关的逻辑添加到仓库中
 
-## Supported elements
-
-The application currently supports a subset of BPMN elements:
-
-* Task
-* User task
-* Service task
-* Exclusive gateway
-* Parallel gateway
-* Start event
-* End event
-
-## Limitations
-
-* The AI assistant does not "see" manual edits made to the diagram. It always responds based on its last generated
-  version. Keep this in mind when interacting with the assistant after making manual changes.
-* Pools and lanes are not and will not be supported.
-
-## Contact
-
-If you have any questions or feedback, please open an issue on this GitHub repository.
+后续将增加对docker环境下，自动部署的测试
