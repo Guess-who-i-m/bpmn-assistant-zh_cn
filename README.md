@@ -1,5 +1,3 @@
-![Logo](images/bpmn_assistant_logo.png)
-
 这个仓库继承自仓库 https://github.com/jtlicardo/bpmn-assistant ，感谢原作者对chat-bpmn工作做出的突出贡献，本项目的存在无意冒犯原作者的个人知识产权，仅用于记录本人在项目部署运行时做出的修改和轻微改进。在原项目中，用户可以直接使用大模型辅助创建、编辑、翻译BPMN图。在本项目中，主要对原项目做出了如下的更改：
 
 - 增加了阿里云Qwen-max和Qwen-plus的访问接口，使得中国用户能够更加轻松的完成LLM的配置，体验LLM驱动的BPMN生成
